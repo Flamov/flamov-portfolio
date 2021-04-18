@@ -1,94 +1,88 @@
 {
-  "name": "flamov-portfolio",
-  "version": "3.1.0",
-  "description": "Flamov portfolio website",
-  "main": "server.js",
-  "directories": {
-    "test": "tests"
-  },
+  "private": true,
   "scripts": {
-    "start": "node server",
+    "start": "node dist/app.js",
+    "build": "npm run server:build && npm run assets:build",
     "watch": "npm run server:watch & npm run assets:watch",
-    "server:watch": "nodemon server.js --inspect",
-    "assets:build": "parcel build src/assets/js/*.js src/assets/sass/*.scss src/assets/img/**/* -d src/public --detailed-report",
-    "assets:watch": "parcel watch src/assets/js/*.js src/assets/sass/*.scss src/assets/img/**/* -d src/public",
-    "eslint": "eslint '**/*.js' --ignore-pattern public/",
-    "eslint:report": "npm run eslint -- -f junit -o reports/eslint/results.xml",
-    "stylelint": "stylelint 'src/assets/**/*.scss'",
-    "test": "export NODE_ENV=test && jest .*.spec.js",
-    "test:watch": "npm run test -- --watch",
-    "test:coverage": "npm run test -- --coverage"
+    "server:build": "tsc --build tsconfig.build.json && cp -r src/views dist/views",
+    "server:watch": "nodemon src/app.ts",
+    "assets:build": "parcel build src/assets/scripts/*.ts src/assets/styles/*.scss -d dist/public --public-url ./ --detailed-report",
+    "assets:watch": "parcel watch src/assets/scripts/*.ts src/assets/styles/*.scss -d dist/public --public-url ./",
+    "test": "npm run test:eslint && npm run test:stylelint && npm run test:unit:coverage",
+    "test:eslint": "eslint src/",
+    "test:stylelint": "stylelint 'src/assets/**/*.scss'",
+    "test:typescript": "tsc",
+    "test:typescript:watch": "tsc --watch",
+    "test:unit": "jest src/.*.spec.ts",
+    "test:unit:coverage": "npm run test:unit -- --coverage",
+    "test:unit:watch": "npm run test:unit:coverage -- --watch"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://Flamov@github.com/Flamov/flamov-portfolio.git"
-  },
-  "keywords": [
-    "flamov",
-    "portfolio",
-    "website"
-  ],
-  "author": "Samuel Kindler",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Flamov/flamov-portfolio/issues"
-  },
-  "homepage": "https://github.com/Flamov/flamov-portfolio#readme",
   "dependencies": {
     "compression": "^1.7.4",
-    "config": "^3.2.4",
-    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-minify-html": "^0.12.0",
-    "helmet": "^3.21.2",
-    "mongo-sanitize": "^1.0.1",
-    "mongoose": "^5.7.7",
-    "morgan": "^1.9.1",
-    "newrelic": "^6.1.0",
-    "nodemon": "^2.0.2",
-    "pug": "^3.0.0"
+    "helmet": "^4.4.1",
+    "morgan": "^1.10.0",
+    "pug": "^3.0.2"
   },
   "devDependencies": {
-    "cheerio": "^1.0.0-rc.3",
-    "eslint": "^7.2.0",
-    "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.18.2",
-    "jest": "^26.0.1",
-    "mongodb-memory-server": "^6.6.1",
-    "nyc": "^15.0.0",
+    "@babel/core": "^7.13.15",
+    "@babel/preset-env": "^7.13.15",
+    "@babel/preset-typescript": "^7.13.0",
+    "@types/express": "^4.17.11",
+    "@types/jest": "^26.0.22",
+    "@types/supertest": "^2.0.11",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "eslint": "^7.24.0",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-plugin-import": "^2.22.1",
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.7",
     "parcel-bundler": "^1.12.4",
-    "sass": "^1.23.1",
-    "stylelint": "^13.2.0",
+    "sass": "^1.32.10",
+    "stylelint": "^13.12.0",
     "stylelint-config-airbnb": "0.0.0",
-    "stylelint-order": "^4.0.0",
-    "stylelint-scss": "^3.12.0",
-    "supertest": "^4.0.2",
-    "vanilla-lazyload": "^16.1.0"
+    "stylelint-order": "^4.1.0",
+    "stylelint-scss": "^3.19.0",
+    "supertest": "^6.1.3",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4",
+    "vanilla-lazyload": "^17.3.1"
   },
   "nodemonConfig": {
     "ignore": [
       "src/assets/*",
-      "src/public/*",
-      "tests/*"
+      "src/**/*.spec.ts"
+    ]
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
+      "@babel/preset-typescript"
     ]
   },
   "eslintConfig": {
-    "extends": "airbnb-base",
-    "rules": {
-      "no-console": 0,
-      "object-curly-newline": [
-        "error",
-        {
-          "ObjectPattern": {
-            "minProperties": 6
-          }
-        }
-      ]
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "extends": [
+      "airbnb-typescript/base"
+    ],
+    "parserOptions": {
+      "project": "./tsconfig.json"
     },
     "env": {
       "node": true,
-      "jest": true,
-      "browser": true
+      "browser": true,
+      "jest": true
     }
   },
   "stylelint": {
@@ -98,7 +92,11 @@
     }
   },
   "jest": {
-    "testEnvironment": "node"
+    "verbose": true,
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/assets/**/*.ts"
+    ]
   },
   "browserslist": [
     "last 1 Chrome version"

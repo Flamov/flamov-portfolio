@@ -1,0 +1,35 @@
+name: Pull Request
+
+on:
+  pull_request:
+
+jobs:
+  pull-request:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js 14
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build server
+        run: npm run server:build
+
+      - name: Build assets
+        run: npm run assets:build
+
+      - name: Test eslint
+        run: npm run test:eslint
+
+      - name: Test stylelint
+        run: npm run test:stylelint
+
+      - name: Test unit and integration
+        run: npm run test:unit:coverage

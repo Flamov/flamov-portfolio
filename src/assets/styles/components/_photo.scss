@@ -1,0 +1,50 @@
+@import "../common/constants";
+
+
+figure.photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  will-change: opacity, transform;
+
+  &:not(.loaded) {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  &.loaded {
+    opacity: 1;
+    padding-top: 0 !important;
+    transition: transform 1s $easeStandard, opacity 1s $easeStandard;
+  }
+  
+  &:not([src]) {
+    visibility: hidden;
+  }
+}
+
+figure.photo > figcaption {
+  display: flex;
+  padding-top: 10px;
+  font-size: fontSize(14px);
+  text-align: left;
+  color: $colorPrimaryAlt;
+
+  @include breakpoint("small") {
+    padding-top: 8px;
+  }
+}
+
+figure.photo > figcaption > .info,
+figure.photo > figcaption > .date {
+  width: 50%;
+  white-space: nowrap;
+
+  &.info > .title {
+    font-weight: 700;
+  }
+
+  &.date {
+    text-align: right;
+  }
+}

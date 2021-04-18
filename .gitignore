@@ -41,14 +41,8 @@ jspm_packages
 .vscode/
 *.code-workspace
 
-# Assets
-src/public/
-
-# Environment variables
-.env
+# Compiled files
+dist/
 
 # Parcel cache
 .cache
-
-# Test reports
-reports/

@@ -1,7 +1,8 @@
+.cache
+.github
+.nyc_output
+.vscode
 node_modules
 npm-debug.log
 coverage
-.env
-.nyc_output
-coverage
-reports
+README.md
